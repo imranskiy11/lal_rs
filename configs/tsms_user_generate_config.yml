@@ -1,0 +1,9 @@
+INDUSTRY_VECTORIZER_CHECKPOINT_ROOT_DIR: 'tsms_bin_data/vectorize_cls_checkpoints'
+WEIGHTS_JSON_PATH: 'tsms_bin_data/weight_tensors.json'
+INPUT_SHAPE_VECTORIZER: 323
+COMPRESS_AE_CHECKPOINT_ROOT_DIR: 'tsms_bin_data/compress_ae_checkpoints'
+SCALER_IND_PATH: 'tsms_bin_data/industry_scalers'
+MAX_LOAD_CTNS_COUNT: 50000000
+CLICKHOUSE_LOAD_BATCH_SIZE: 100000
+USER_EMBED_BINFILE_PATH: 'tsms_bin_data/tsms_lal_23112022_dim64.bin'
+SCALER_PATH: 'raw_bin_data/scaler/std_scaler_ae.bin'

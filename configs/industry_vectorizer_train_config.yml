@@ -1,0 +1,34 @@
+MAX_ADS_RATE_NEGATIVE: 0.01
+MIN_ADS_RATE_POSITIVE: 0.15
+TEST_SIZE: 0.12
+BATCH_SIZE: 16384
+SHUFFLE_DL: True
+SPLIT_DATA: True
+MONITOR_LOSS: "val_loss"
+MIN_DELTA: 0.001
+EARLY_STOP_PATIENCE: 45
+PL_TRAINER_VERBOSE: True
+PL_TRAINER_MODE: "min"
+MAX_EPOCHS: 200 #00
+AUTO_LR_FIND: True
+BENCHMARK: True
+DETERMINISTIC: True
+LOG_EVERY_N_STEPS: 1
+WEIGHTS_DICT: collections.OrderedDict()
+SAVE_LAST: True
+batch_size_divisor: 10
+saved_ctns_column_name: 'ctns_train'
+INDUSTRY_SCALERS_FOLDER_PATH: 'tsms_bin_data/industry_scalers'
+CLASS_WEIGHT_TENSOR_PATH: 'tsms_bin_data/weight_tensors.json'
+TRAIN_TENSORS_PATH: 'tsms_bin_data/train_tensors/generated_train_tensors.pt'
+CHECKPOINT_ROOT_DIR: 'tsms_bin_data/vectorize_cls_checkpoints'
+TRAIN_SIZE: 2000000 #00
+MAX_LOAD_CTNS_COUNT: 40000000 #00
+CLICKHOUSE_LOAD_BATCH_SIZE: 100000 #0
+CHECK_SCORES: True
+MONGO_SAVE_CSV_PATH: 'tsms_data/mongo/mongo_agg.csv'
+MLBIN_PATH_FOLDER: 'tsms_bin_data\mlb_data'
+MLBIN_FITING: False
+DROP_SUBS_KEY_IN_PREPROCESS: False
+WEIGHT_CLASS_TENSOR_JSON_PATH: 'tsms_bin_data/weight_tensors.json'
+SCALER_PATH: 'raw_bin_data/scaler/std_scaler_ae.bin'
