@@ -94,7 +94,7 @@ class IndustryEmbAutoEncoder(pl.LightningModule):
 
 class RawEmbAutoEncoder(pl.LightningModule):
     def __init__(self,
-                 encoder_input_size=323,
+                 encoder_input_size=406,
                  encoder_hidden_size=64,
                  device_use='cuda'):
         super().__init__()

@@ -6,7 +6,7 @@ from torch.nn import functional as F
 
 class LalNetClsCE(pl.LightningModule):
     def __init__(self,
-                 input_shape=323,
+                 input_shape=406,
                  view=False,
                  weights_tensor=torch.Tensor([1, 4]),
                  device_use='cuda'
