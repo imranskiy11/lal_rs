@@ -27,7 +27,7 @@ DROP_SUBS_KEYS_COLUMN: True
 GENERATE_NEW_TRAIN_AE_DATA: False
 RAW_AE_TRAINING: True
 SAVE_LAST: True
-INPUT_SHAPE: 323
+INPUT_SHAPE: 406 #323
 SCALER_PATH: 'raw_bin_data/scaler/std_scaler_ae.bin'
 TRAIN_DATA_TENSOR_PATH: 'raw_bin_data/train_tensors/vecs_users_raw_ae_train.pt'
 #USER_EMBED_BINFILE_PATH: 'raw_bin_data/raw_lal_23112022_dim64.bin'

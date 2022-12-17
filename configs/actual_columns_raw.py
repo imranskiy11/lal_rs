@@ -267,4 +267,5 @@ actual_columns = ['family_status',
  'employment_type_homemaker_ind',
  'car_owner_m_ind',
  'car_owner_3m_ind',
- 'data_voice_ind']
+ 'data_voice_ind',
+ 'home_region']

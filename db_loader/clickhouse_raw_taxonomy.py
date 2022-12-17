@@ -15,7 +15,7 @@ from .connections import clickhouse_connection_string, taxonomy_table_name
 from clickhouse_driver import connect as clickhouse_connect
 from .preprocess_helpers import is_married, row_to_list, employ_replace_by_maping, remove_space_cls
 from tqdm.rich import tqdm
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import MultiLabelBinarizer, LabelBinarizer
 import numpy as np
 from termcolor import colored
 import math
@@ -129,6 +129,9 @@ class ClickhouseLoader:
             # test mode and load prepared csv data from clickhouse
             self.taxonomy_dataframe = pd.read_csv(self.prepared_csv_path)
             print(colored('loaded prepared csv-file | OK', 'green'))
+            
+        self.clickhouse_connection_cursor.execute(f'select distinct home_region from FocusTaxonomy_prod')
+        self.home_regions_list = [hr[0] for hr in self.clickhouse_connection_cursor.fetchall() if hr[0] is not None] + ['unknown_region']
 
     def define_all_columns_list(self):
         self.clickhouse_connection_cursor.execute(f'DESCRIBE TABLE {taxonomy_table_name}')
@@ -309,6 +312,15 @@ class ClickhouseLoader:
             right_index=True)
         del category_df, category_list
         self.features_taxonomy.drop('mcc_cat_unknown_mcc_cat', axis=1, inplace=True)
+        
+        # home region and geo features
+        label_bin_home_region = LabelBinarizer()
+        self.features_taxonomy.home_region.fillna('unknown_region', inplace=True)
+        label_bin_home_region.fit(self.home_regions_list)
+        self.features_taxonomy.join(
+            pd.DataFrame(label_bin_home_region.transform(self.features_taxonomy.home_region), columns=[f'home_region_{reg}' for reg in list(label_bin_home_region.classes_)]).drop('home_region_unknown_region', axis=1))
+        
+        self.features_taxonomy.drop('home_region', axis=1, inplace=True)
 
         # drop useless columns
         for useless_column in ['car_interest_brand', 'debit_card_bank_name', 'credit_card_bank_name',
@@ -363,68 +375,6 @@ class ClickhouseLoader:
         self.taxonomy_dataframe = pd.DataFrame(output, columns=self.conc_features_list)
         self.preprocess_taxonomy(dropNA=False)
         return self.features_taxonomy
-
-#
-# class ClickhouseRawTax:
-#     def __init__(self, columns_data_file_path, local=False,
-#                  max_load_ctns_count=50000000,
-#                  connection_string=None,
-#                  clichhouse_load_batch_size=100000,
-#                  mlbin_path=None, mlb_fitting=False,
-#                  table_name=None, scaler_path=None,
-#                  train_scaler_size=10000):
-#
-#         super(ClickhouseRawTax, self).__init__()
-#
-#         if not self.local:
-#             # build connection to clickhouse taxonomy data
-#             if connection_string is None:
-#                 self.clickhouse_connection_cursor = clickhouse_connect(clickhouse_connection_string).cursor()
-#             else:
-#                 self.clickhouse_connection_cursor = clickhouse_connect(connection_string).cursor()
-#
-#         self.table_name = taxonomy_table_name
-#
-#         # execute all ctns query
-#         self.clickhouse_connection_cursor.execute(
-#             f'select top {max_load_ctns_count} subs_key from {self.table_name}')
-#         self.all_ctns = [
-#             cell[0] for cell in self.clickhouse_connection_cursor.fetchall()]
-#
-#         # assert isinstance(self.all_ctns, list), 'Type error'
-#         self.train_scaler_sample_ctns = train_scaler_size
-#
-#         # init or load scaler
-#         if scaler_path is None:
-#             self.scaler = StandardScaler()
-#         else: self.scaler = joblib.load(scaler_path)
-#
-#         # all columns list from clickhouse db
-#         self.clickhouse_connection_cursor.execute(f'DESCRIBE TABLE {taxonomy_table_name}')
-#         all_columns_list = [col_name[0] for col_name in self.clickhouse_connection_cursor.fetchall()]
-#
-#         self.conc_columns = None
-#
-#
-#     def init_train_data(self, prepared_csv_path=None):
-#         # if local load dataframe taxonomy
-#         if prepared_csv_path is not None:
-#             return pd.read_csv(prepared_csv_path)
-#         print(self.table_name)
-#         # TODO load data
-#
-#
-#     def fill_data(self, cols):
-#         # fill data by cols
-#         pass
-#
-#     def to_binary_data(self, cols):
-#         #change to binary data input columns
-#         pass
-#
-#     def transform(self, cols):
-#         # transform and feature engineering
-#         pass
 
 
 if __name__ == '__main__':
