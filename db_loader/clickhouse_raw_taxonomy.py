@@ -317,7 +317,7 @@ class ClickhouseLoader:
         label_bin_home_region = LabelBinarizer()
         self.features_taxonomy.home_region.fillna('unknown_region', inplace=True)
         label_bin_home_region.fit(self.home_regions_list)
-        self.features_taxonomy.join(
+        self.features_taxonomy = self.features_taxonomy.join(
             pd.DataFrame(label_bin_home_region.transform(self.features_taxonomy.home_region), columns=[f'home_region_{reg}' for reg in list(label_bin_home_region.classes_)]).drop('home_region_unknown_region', axis=1))
         
         self.features_taxonomy.drop('home_region', axis=1, inplace=True)
